@@ -4,7 +4,8 @@ import Login from '../components/Login.vue'
 import Map from '../components/Map'
 import vueJsonp from 'vue-jsonp'
 import BaiduMap from 'vue-baidu-map'
-import Home from '../components/Home'
+import Home from '../components/home'
+import Welcome from '../components/Welcome'
 
 Vue.use(BaiduMap, {
   /* 申请的百度密钥，可以在百度地图官网申请 */
@@ -18,7 +19,11 @@ const routes = [
   { path:'/',redirect: '/Login'},
   { path: '/Login',component: Login},
   {path: '/Map',component: Map},
-  {path: '/home',component: Home}
+  //访问home组件即重定向到welcome组件
+  {path: '/home', component: Home,
+    redirect:'/welcome',
+  children:[ {path: '/welcome', component: Welcome}]
+  }
 ]
 
 
