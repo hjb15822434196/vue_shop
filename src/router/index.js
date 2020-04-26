@@ -4,7 +4,7 @@ import Login from '../components/Login.vue'
 import Map from '../components/Map'
 import vueJsonp from 'vue-jsonp'
 import BaiduMap from 'vue-baidu-map'
-import Home from '../components/home'
+import Home from '../components/Home'
 
 Vue.use(BaiduMap, {
   /* 申请的百度密钥，可以在百度地图官网申请 */
