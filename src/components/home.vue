@@ -14,7 +14,7 @@
       <!--侧边栏-->
       <el-aside :width = "isCollapse? '64px' : '200px' ">
         <div class="toggle-button" @click="toggleCollapse">|||</div>
-       <!-- 开启路由定位:router="true"-->
+        <!-- 开启路由定位:router="true"-->
         <el-menu background-color="#dfdfe0" text-color="black" active-text-color="#48a2ff" unique-opened :collapse="isCollapse" :collapse-transition="false" :router="true">
           <!--一级菜单--><!--index只能接受String-->
           <el-submenu :index = "item.id + '' "  v-for="item in menuList " :key="item.id" >
@@ -37,7 +37,7 @@
       </el-aside>
       <!--主页-->
       <el-main>
-       <!-- 路由占位符-->
+        <!-- 路由占位符-->
         <router-view></router-view>
       </el-main>
     </el-container>
@@ -67,23 +67,23 @@
     created(){
       this.getMenuList()
     },
-     methods:{
+    methods:{
       //退出功能
-    logout(){
-      //清除token
-      window.sessionStorage.clear();
-      this.$router.push("/Login");
-    },
-       //获取所有菜单数据
-   async getMenuList(){
-   const {data : res} = await this.$http.get('menus')
-     if (res.meta.status != '200')  return this.$message.error(res.meta.msg)
-     this.menuList=res.data
-   },
-       //侧边栏折叠效果
-       toggleCollapse(){
-      this.isCollapse = !this.isCollapse;
-       }
+      logout(){
+        //清除token
+        window.sessionStorage.clear();
+        this.$router.push("/Login");
+      },
+      //获取所有菜单数据
+      async getMenuList(){
+        const {data : res} = await this.$http.get('menus')
+        if (res.meta.status != '200')  return this.$message.error(res.meta.msg)
+        this.menuList=res.data
+      },
+      //侧边栏折叠效果
+      toggleCollapse(){
+        this.isCollapse = !this.isCollapse;
+      }
 
     }
   }
