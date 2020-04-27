@@ -12,7 +12,7 @@
     <!--页面主体-->
     <el-container>
       <!--侧边栏-->
-      <el-aside :width = "isCollapse? '64px' : '200px' ">
+      <el-aside :width = "isCollapse? '64px'  :  '200px' ">
         <div class="toggle-button" @click="toggleCollapse">|||</div>
         <!-- 开启路由定位:router="true"-->
         <el-menu background-color="#dfdfe0" text-color="black" active-text-color="#48a2ff" unique-opened :collapse="isCollapse" :collapse-transition="false" :router="true">
