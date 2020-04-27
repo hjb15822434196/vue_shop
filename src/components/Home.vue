@@ -15,7 +15,8 @@
       <el-aside :width = "isCollapse? '64px'  :  '200px' ">
         <div class="toggle-button" @click="toggleCollapse">|||</div>
         <!-- 开启路由定位:router="true"-->
-        <el-menu background-color="#dfdfe0" text-color="black" active-text-color="#48a2ff" unique-opened :collapse="isCollapse" :collapse-transition="false" :router="true">
+        <el-menu background-color="#dfdfe0" text-color="black" active-text-color="#48a2ff" unique-opened
+                 :collapse="isCollapse" :collapse-transition="false" :router="true" :default-active="activePath">
           <!--一级菜单--><!--index只能接受String-->
           <el-submenu :index = "item.id + '' "  v-for="item in menuList " :key="item.id" >
             <template slot="title">
@@ -26,7 +27,7 @@
             </template>
             <!--二级菜单-->
             <!--路由自动定位地址:index =" '/'+subItem.path + '' "-->
-            <el-menu-item :index =" '/'+subItem.path + '' " v-for="subItem in item.children" :key="subItem.id">
+            <el-menu-item :index =" '/'+subItem.path + '' " v-for="subItem in item.children" :key="subItem.id" @click="saveNavState( '/'+subItem.path + '')">
               <!--图标-->
               <i class="el-icon-menu"></i>
               <!--文本-->
@@ -61,11 +62,16 @@
           '145' :'el-icon-pie-chart'
         },
         //是否折叠
-        isCollapse : false
+        isCollapse : false,
+        //被激活的链接地址
+        activePath : ''
       }
     },
     created(){
-      this.getMenuList()
+      //拿到侧边栏数据
+      this.getMenuList();
+      //给高亮activePath赋值
+      this.activePath = window.sessionStorage.getItem('activePath');
     },
     methods:{
       //退出功能
@@ -83,6 +89,12 @@
       //侧边栏折叠效果
       toggleCollapse(){
         this.isCollapse = !this.isCollapse;
+      },
+      //把地址存到sessionStorage中
+      saveNavState(activePath){
+        window.sessionStorage.setItem('activePath',activePath);
+        this.activePath=activePath;
+
       }
     }
   }
