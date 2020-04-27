@@ -4,7 +4,7 @@ import Login from '../components/Login.vue'
 import Map from '../components/Map'
 import vueJsonp from 'vue-jsonp'
 import BaiduMap from 'vue-baidu-map'
-import Home from '../components/Home'
+import Home from '../components/home'
 import Welcome from '../components/Welcome'
 import Users from '../components/user/Users'
 
