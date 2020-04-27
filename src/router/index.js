@@ -21,7 +21,7 @@ const routes = [
   { path: '/Login',component: Login},
   {path: '/Map',component: Map},
   //访问home组件即重定向到welcome组件
-  {path: '/Home', component: Home,
+  {path: '/home', component: Home,
     redirect:'/welcome',
     children:[
       {path: '/welcome', component: Welcome},
