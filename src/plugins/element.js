@@ -19,7 +19,8 @@ import { Message,
   Table,
   TableColumn,
   Switch,
-  Tooltip
+  Tooltip,
+  Pagination
 } from 'element-ui'
 
 
@@ -43,5 +44,6 @@ Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Switch)
 Vue.use(Tooltip)
+Vue.use(Pagination)
 //挂载在vue的对象上，可以通过this访问
 Vue.prototype.$message = Message

@@ -44,6 +44,16 @@
             </template>
           </el-table-column>
         </el-table>
+      <!--分页区域-->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="queryInfo.pagenum"
+        :page-sizes="[1, 2, 3, 5]"
+        :page-size="queryInfo.pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </el-card>
 
   </div>
@@ -75,7 +85,16 @@
         if (res.meta.status!=200) return this.$message.error('获取用户列表失败！')
         this.userList=res.data.users
         this.total=res.data.total
-
+      },
+      //监听pagesize改变事件并实时更新每页的显示的数据条数
+      handleSizeChange(newsize){
+        this.queryInfo.pagesize=newsize
+        this.getUserList()
+      },
+      //监听pagenum改变事件
+      handleCurrentChange(newpage){
+        this.queryInfo.pagenum=newpage
+        this.getUserList()
       }
     }
   }
