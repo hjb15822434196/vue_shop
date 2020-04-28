@@ -28,7 +28,7 @@
               <!--作用域插槽-->
             <template v-slot="scope">
               <!--switch开关-->
-              <el-switch v-model="scope.row.mg_state"></el-switch>
+              <el-switch v-model="scope.row.mg_state" @change="userStatusChanged(scope.row)" ></el-switch>
             </template>
           </el-table-column>
           <el-table-column label="操作" widt="180px">
@@ -95,7 +95,19 @@
       handleCurrentChange(newpage){
         this.queryInfo.pagenum=newpage
         this.getUserList()
+      },
+      //监听 switch开关的状态
+      async userStatusChanged(userInfo){
+      const {data:res}= await this.$http.put(`users/${userInfo.id}/state/${userInfo.mg_state}`)
+        if(res.meta.status!=200){
+          userInfo.mg_state=! userInfo.mg_state
+          return this.$message.error('更新用户状态失败！')
+        }
+        this.$message.success('更新用户状态成功！')
+
+
       }
+
     }
   }
 </script>
