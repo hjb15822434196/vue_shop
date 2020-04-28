@@ -15,7 +15,9 @@ import { Message,
   BreadcrumbItem,
   Card,
   Row,
-  Col
+  Col,
+  Table,
+  TableColumn
 } from 'element-ui'
 
 
@@ -35,5 +37,7 @@ Vue.use(BreadcrumbItem)
 Vue.use(Card)
 Vue.use(Row)
 Vue.use(Col)
+Vue.use(Table)
+Vue.use(TableColumn)
 //挂载在vue的对象上，可以通过this访问
 Vue.prototype.$message = Message
