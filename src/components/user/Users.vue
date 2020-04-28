@@ -24,8 +24,25 @@
           <el-table-column label="邮箱" prop="email"></el-table-column>
           <el-table-column label="电话" prop="mobile"></el-table-column>
           <el-table-column label="角色" prop="role_name"></el-table-column>
-          <el-table-column label="状态" prop="mg_state"></el-table-column>
-          <el-table-column label="操作"></el-table-column>
+          <el-table-column label="状态" >
+              <!--作用域插槽-->
+            <template v-slot="scope">
+              <!--switch开关-->
+              <el-switch v-model="scope.row.mg_state"></el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" widt="180px">
+            <template v-slot="scope">
+              <!--编辑-->
+            <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+              <!--删除-->
+            <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+              <!--分配角色-->
+              <el-tooltip  effect="dark" content="分配角色" placement="top" :enterable="false">
+                <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+              </el-tooltip>
+            </template>
+          </el-table-column>
         </el-table>
     </el-card>
 

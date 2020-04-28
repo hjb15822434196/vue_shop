@@ -17,7 +17,9 @@ import { Message,
   Row,
   Col,
   Table,
-  TableColumn
+  TableColumn,
+  Switch,
+  Tooltip
 } from 'element-ui'
 
 
@@ -39,5 +41,7 @@ Vue.use(Row)
 Vue.use(Col)
 Vue.use(Table)
 Vue.use(TableColumn)
+Vue.use(Switch)
+Vue.use(Tooltip)
 //挂载在vue的对象上，可以通过this访问
 Vue.prototype.$message = Message
