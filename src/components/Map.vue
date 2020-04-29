@@ -1,74 +1,53 @@
 <template>
-  <div class="hello">
-
-    <baidu-map class="bm-view" :center="{lng: mapArr.lng, lat: mapArr.lat}" :zoom="15" :scroll-wheel-zoom="true">
-      <bm-marker :position="{lng: mapArr.lng, lat: mapArr.lat}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE">
-      </bm-marker>
-    </baidu-map>
-  </div>
+      <div id="allmap">
+      </div>
 </template>
+
 <script>
+
+  var map = require("../assets/js/map.js");
   export default {
-    name: 'HelloWorld',
     data() {
       return {
-        mapArr: {
-          lat: 0,
-          lng: 0,
-        },
+        ak: "brdBS22T3Ic5zeAqnqHXGisSWhQNU91P"
       }
     },
-    props: ['ipAll'],
     mounted() {
+      this.$nextTick(function () {
+        var _this = this;
+        map.MP(_this.ak).then(BMap => {
+          // 百度地图API功能
+          var map = new BMap.Map("allmap");
+          var point = new BMap.Point(116.331398, 39.897445);
+          map.centerAndZoom(point, 12);
 
-      this.getWd()
-    },
-    methods: {
-      showLocation(e) {//jsonp回调的方法，拿到转换成经纬度的值
-        this.mapArr = e.result.location
-      },
-      getWd() {
-        let vm = this;
-        vm.$jsonp(
+          var geolocation = new BMap.Geolocation();
+          geolocation.getCurrentPosition(function (r) {
+            if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+              var mk = new BMap.Marker(r.point);
+              map.addOverlay(mk);
+              map.panTo(r.point);
+              alert('您的位置：' + r.point.lng + ',' + r.point.lat);
+            }
+            else {
+              alert('failed' + this.getStatus());
+            }
+          }, {enableHighAccuracy: true})
+        })
+      })
 
-//调用百度地图，获取地理位置的经纬度
-          'http://api.map.baidu.com/geocoding/v3/?address=' + vm.ipAll +
-          '&output=json&ak=X7UHQqYy3WobTXHk3Mw3oN96ahHcQuuG&callback=showLocation',
-        )
-          .then(res => {
-            vm.showLocation(res)
-          })
-          .catch(err => {});
-      },
     },
-    comments: {
-// BaiduMap
-    }
+
   }
 </script>
 
 <style scoped>
-  .bm-view {
-    width: 100%;
-    height: 300px;
+  body, html, #allmap {
+    width: 1350px;
+    height: 600px;
+    overflow: hidden;
+    margin: 0;
+    font-family: "微软雅黑";
   }
 
-  h1,
-  h2 {
-    font-weight: normal;
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-
-  a {
-    color: #42b983;
-  }
 </style>

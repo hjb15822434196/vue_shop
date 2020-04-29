@@ -58,7 +58,7 @@
       <el-dialog
         title="添加用户"
         :visible.sync="dialogVisible"
-        width="50%">
+        width="50%" @close="addDialogClosed">
        <!-- 表单验证-->
         <el-form :model="addForm" :rules="addRules" ref="addFormRef" label-width="70px">
           <el-form-item label="用户名" prop="username">
@@ -76,7 +76,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    <el-button type="primary" @click="addUser">确 定</el-button>
   </span>
       </el-dialog>
     </el-card>
@@ -174,8 +174,26 @@
           return this.$message.error('更新用户状态失败！')
         }
         this.$message.success('更新用户状态成功！')
-
-
+      },
+      //监听添加用户对话框的关闭事件
+      addDialogClosed(){
+        this.$refs.addFormRef.resetFields();
+      },
+      //添加用户预校验
+      addUser(){
+        this.$refs.addFormRef.validate(async valid=>{
+          if (!valid) return
+          //成功发起添加请求
+       const {data :res} =  await this.$http.post('users',this.addForm)
+      if (res.meta.status!==201){
+        return this.$message.error('添加用户失败')
+      }
+          this.$message.success('添加用户成功')
+          //隐藏对话框
+          this.dialogVisible = false
+          //重新获取用户列表数据
+          this.getUserList()
+        })
       }
 
     }
