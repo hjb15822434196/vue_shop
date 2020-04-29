@@ -13,7 +13,7 @@
         <el-col :span="7"> <el-input v-model="queryInfo.query" clearable @clear="getUserList" placeholder="请输入内容" >
           <el-button  slot="append" icon="el-icon-search" @click="getUserList"></el-button>
         </el-input></el-col>
-        <el-col :span="4"> <el-button type="primary">添加用户</el-button></el-col>
+        <el-col :span="4"> <el-button type="primary" @click="dialogVisible = true">添加用户</el-button></el-col>
       </el-row>
       <el-row>
        <!-- 用户列表区域-->
@@ -54,6 +54,31 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
+      <!--添加用户对话框-->
+      <el-dialog
+        title="添加用户"
+        :visible.sync="dialogVisible"
+        width="50%">
+       <!-- 表单验证-->
+        <el-form :model="addForm" :rules="addRules" ref="addFormRef" label-width="70px">
+          <el-form-item label="用户名" prop="username">
+            <el-input v-model="addForm.username"></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input v-model="addForm.password"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="addForm.email"></el-input>
+          </el-form-item>
+          <el-form-item label="手机号" prop="phone">
+            <el-input v-model="addForm.phone"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
+      </el-dialog>
     </el-card>
 
   </div>
@@ -63,6 +88,24 @@
 <script>
   export default {
    data(){
+     //校验邮箱
+     var checkEmail=(rule,value,cb)=>{
+       //正则
+        const regEmail=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+       if (regEmail.test(value)) {
+         return cb()//合法
+       }
+       cb(new Error('请输入合法邮箱'))
+     }
+       //校验 手机号
+     var checkPhone=(rule,value,cb)=>{
+       //正则
+       const regPhone=/^1([38]\d|5[0-35-9]|7[3678])\d{8}$/
+       if (regPhone.test(value)) {
+         return cb()//合法
+       }
+       cb(new Error('请输入合法手机号'))
+     }
       return{
         //获取用户列表的参数对象
         queryInfo : {
@@ -71,7 +114,34 @@
           pagesize:2
         },
         userList :[],
-        total:0
+        total:0,
+        dialogVisible:false,//添加用户对话框控制显隐
+        //添加用户(提交表的数据)
+        addForm :{
+          username:'',
+          password:'',
+          email:'',
+          phone:''
+        },
+        addRules:{
+          username:[
+            { required: true, message: '请输入用户名', trigger: 'blur' },
+            { min: 3, max: 10, message: '长度在 3 到10 个字符', trigger: 'blur' }
+          ],
+          password:[
+            { required: true, message: '请输入密码', trigger: 'blur' },
+            { min: 3, max: 10, message: '长度在 3 到10 个字符', trigger: 'blur' }
+          ],
+          email:[
+            { required: true, message: '请输入邮箱', trigger: 'blur' },
+            { validator:checkEmail, trigger: 'blur' }
+          ],
+          phone:[
+            { required: true, message: '请输入手机号', trigger: 'blur' },
+            { validator:checkPhone, trigger: 'blur' }
+          ]
+        },
+
       }
    },
     created(){
