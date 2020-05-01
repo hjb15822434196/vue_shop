@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import { Message,
+import {
+  Message,
   Button,
   Form,
   FormItem,
@@ -21,7 +22,8 @@ import { Message,
   Switch,
   Tooltip,
   Pagination,
-  Dialog
+  Dialog,
+  MessageBox
 } from 'element-ui'
 
 
@@ -49,3 +51,4 @@ Vue.use(Pagination)
 Vue.use(Dialog)
 //挂载在vue的对象上，可以通过this访问
 Vue.prototype.$message = Message
+Vue.prototype.$confirm=MessageBox.confirm
