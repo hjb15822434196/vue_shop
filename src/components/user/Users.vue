@@ -34,7 +34,7 @@
           <el-table-column label="操作" widt="180px">
             <template v-slot="scope">
               <!--编辑-->
-            <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
               <!--删除-->
             <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
               <!--分配角色-->
@@ -70,13 +70,35 @@
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="addForm.email"></el-input>
           </el-form-item>
-          <el-form-item label="手机号" prop="phone">
-            <el-input v-model="addForm.phone"></el-input>
+          <el-form-item label="手机号" prop="mobile">
+            <el-input v-model="addForm.mobile"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="addUser">确 定</el-button>
+  </span>
+      </el-dialog>
+      <!--编辑用户对话框-->
+      <el-dialog
+        title="编辑用户数据"
+        :visible.sync="editDialogVisible"
+        width="50%" @close="editDialogClosed">
+        <!-- 表单验证-->
+        <el-form :model="editForm" :rules="addRules" ref="editFormRef" label-width="70px">
+          <el-form-item label="用户名"  >
+            <el-input v-model="editForm.username" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="editForm.email"></el-input>
+          </el-form-item>
+          <el-form-item label="手机号" prop="mobile">
+            <el-input v-model="editForm.mobile"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="editDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="editDialogVisible=false">确 定</el-button>
   </span>
       </el-dialog>
     </el-card>
@@ -116,12 +138,14 @@
         userList :[],
         total:0,
         dialogVisible:false,//添加用户对话框控制显隐
+        editDialogVisible:false,//编辑用户对话框显隐
+        editForm:{},//回显查询用户信息
         //添加用户(提交表的数据)
         addForm :{
           username:'',
           password:'',
           email:'',
-          phone:''
+          mobile:''
         },
         addRules:{
           username:[
@@ -136,7 +160,7 @@
             { required: true, message: '请输入邮箱', trigger: 'blur' },
             { validator:checkEmail, trigger: 'blur' }
           ],
-          phone:[
+          mobile:[
             { required: true, message: '请输入手机号', trigger: 'blur' },
             { validator:checkPhone, trigger: 'blur' }
           ]
@@ -175,10 +199,14 @@
         }
         this.$message.success('更新用户状态成功！')
       },
-      //监听添加用户对话框的关闭事件
+      //监听添加用户对话框的关闭事件,重置数据
       addDialogClosed(){
         this.$refs.addFormRef.resetFields();
       },
+      editDialogClosed(){
+        this.$refs.editFormRef.resetFields();
+      },
+
       //添加用户预校验
       addUser(){
         this.$refs.addFormRef.validate(async valid=>{
@@ -194,8 +222,19 @@
           //重新获取用户列表数据
           this.getUserList()
         })
+      },
+      //修改用户对话框
+     async showEditDialog(id){
+        //拿到对应的数据
+       const{data:res}=await this.$http.get('users/'+id)
+       if (res.meta.status!==200){
+         return this.$message.error('查询用户失败')
+       }
+       //获取成功并赋值
+       this.editForm=res.data
+       //对话框出现
+      this.editDialogVisible=true
       }
-
     }
   }
 </script>
