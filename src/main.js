@@ -13,7 +13,7 @@ axios.interceptors.request.use(config =>{
   //最后必须返回config
   return config
 })
-//挂在原型属性，通过this调用
+//挂载原型属性，通过this调用
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false

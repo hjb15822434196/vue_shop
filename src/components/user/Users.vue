@@ -3,11 +3,11 @@
     <!-- 面包屑导航-->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/Home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item><a href="/">用户管理</a></el-breadcrumb-item>
+      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!--卡片视图区域-->
-    <el-card >
+    <el-card>
      <!-- 搜索区域-->
       <el-row :gutter="20">
         <el-col :span="7"> <el-input v-model="queryInfo.query" clearable @clear="getUserList" placeholder="请输入内容" >
@@ -15,9 +15,7 @@
         </el-input></el-col>
         <el-col :span="4"> <el-button type="primary" @click="dialogVisible = true">添加用户</el-button></el-col>
       </el-row>
-      <el-row>
        <!-- 用户列表区域-->
-      </el-row>
         <el-table :data="userList" border stripe>
           <el-table-column type="index"></el-table-column>
           <el-table-column label="姓名" prop="username"></el-table-column>
@@ -176,7 +174,7 @@
         const {data: res} = await this.$http.get('users',
        {params:this.queryInfo
        })
-        if (res.meta.status!=200) return this.$message.error('获取用户列表失败！')
+        if (res.meta.status!==200) return this.$message.error('获取用户列表失败！')
         this.userList=res.data.users
         this.total=res.data.total
       },
@@ -193,8 +191,8 @@
       //监听 switch开关的状态
       async userStatusChanged(userInfo){
       const {data:res}= await this.$http.put(`users/${userInfo.id}/state/${userInfo.mg_state}`)
-        if(res.meta.status!=200){
-          userInfo.mg_state=! userInfo.mg_state
+        if(res.meta.status!==200){
+          userInfo.mg_state=! userInfo.mg_state;
           return this.$message.error('更新用户状态失败！')
         }
         this.$message.success('更新用户状态成功！')
@@ -210,13 +208,13 @@
       //添加用户预校验
       addUser(){
         this.$refs.addFormRef.validate(async valid=>{
-          if (!valid) return
+          if (!valid) return;
           //成功发起添加请求
        const {data :res} =  await this.$http.post('users',this.addForm)
       if (res.meta.status!==201){
         return this.$message.error('添加用户失败')
       }
-          this.$message.success('添加用户成功')
+          this.$message.success('添加用户成功');
           //隐藏对话框
           this.dialogVisible = false
           //重新获取用户列表数据
@@ -238,7 +236,7 @@
       //修改用户信息并提交
       editUserInfo(){
         this.$refs.editFormRef.validate( async valid=>{
-         if (!valid) return
+         if (!valid) return;
          //发起修改用户数据请求
         const{data:res}=await  this.$http.put('users/'+this.editForm.id,
             {
@@ -248,9 +246,9 @@
           if (res.meta.status!==200){
             return this.$message.error('更新失败')
           }
-          this.$message.success('添加用户成功')
+          this.$message.success('添加用户成功');
           //隐藏对话框
-          this.editDialogVisible=false
+          this.editDialogVisible=false;
           //重新获取用户列表数据
           this.getUserList()
         })
@@ -262,17 +260,17 @@
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).catch(err =>err)
+        }).catch(err =>err);
 
         if(confirmResult!=='confirm'){
         return this.$message.info('已取消删除')
         }
         //请求删除
-         const{data:res}=  await this.$http.delete('users/'+id)
+         const{data:res}=  await this.$http.delete('users/'+id);
         if (res.meta.status!==200){
           return this.$message.error('删除失败')
         }
-        this.$message.success('删除成功')
+        this.$message.success('删除成功');
         //返回新的数据
         this.getUserList()
 
@@ -281,6 +279,6 @@
   }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 
 </style>
