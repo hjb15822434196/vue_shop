@@ -29,15 +29,15 @@
               <el-switch v-model="scope.row.mg_state" @change="userStatusChanged(scope.row)" ></el-switch>
             </template>
           </el-table-column>
-          <el-table-column label="操作" widt="180px">
+          <el-table-column label="操作" width="3  00px">
             <template v-slot="scope">
               <!--编辑-->
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
+            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)">编辑</el-button>
               <!--删除-->
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeById(scope.row.id)"></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeById(scope.row.id)">删除</el-button>
               <!--分配角色-->
               <el-tooltip  effect="dark" content="分配角色" placement="top" :enterable="false">
-                <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+                <el-button type="warning" icon="el-icon-setting" size="mini">分配角色</el-button>
               </el-tooltip>
             </template>
           </el-table-column>
