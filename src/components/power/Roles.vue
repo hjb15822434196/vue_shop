@@ -51,7 +51,7 @@
               <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeById(scope.row.id)">删除</el-button>
               <!--分配权限-->
               <el-tooltip  effect="dark" content="分配权限" placement="top" :enterable="false">
-                <el-button type="warning" icon="el-icon-setting" size="mini">分配权限</el-button>
+                <el-button type="warning" icon="el-icon-setting" size="mini" @click="showSetRightDialog(scope.row)">分配权限</el-button>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -99,6 +99,19 @@
           <span slot="footer" class="dialog-footer">
     <el-button @click="editDialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="editUserInfo">确 定</el-button>
+        </span>
+        </el-dialog>
+        <!--分配权限对话框-->
+        <el-dialog
+          title="分配权限"
+          :visible.sync="rightDialogVisible"
+          width="50%"
+        @close="setRightsDialogClosed">
+          <!-- 树形控件-->
+          <el-tree :data="rightsList" :props="treeProps" show-checkbox node-key="id" default-expand-all :default-checked-keys="defKeys"></el-tree>
+          <span slot="footer" class="dialog-footer">
+    <el-button @click="rightDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="rightDialogVisible = false">确 定</el-button>
   </span>
         </el-dialog>
       </el-card>
@@ -109,8 +122,17 @@
     export default {
         data(){
           return{
-            //获取角色权限数据
+            //获取角色数据
             roleList:[],
+            //获取权限数据
+            rightsList:[],
+            //树形控件绑定的属性
+            treeProps:{
+              label:'authName',
+              children:'children'
+            },
+            //默认选中节点Id值数组
+            defKeys:[],
             //添加角色(提交表的数据)
             addForm :{
               roleId:'',
@@ -120,6 +142,7 @@
             editForm:{},//回显查角色信息
             dialogVisible:false,//添加角色对话框控制显隐
             editDialogVisible:false,//编辑角色对话框显隐
+            rightDialogVisible:false,//分配权限对话框显隐
             addRules:{
               roleName:[
                 { required: true, message: '请输入角色名名', trigger: 'blur' },
@@ -246,8 +269,32 @@
          //返回新的数据
         role.children=res.data
 
+        },
+        //分配权限对话框
+        async showSetRightDialog(role){
+        const {data:res}= await this.$http.get('rights/tree')
+          if (res.meta.status!==200){
+            return this.$message.error('删除权限数据失败')
+          }
+          this.rightsList=res.data;
+          this.getLeafKeys(role,this.defKeys)
+          this. rightDialogVisible=true
+        },
+        //通过递归获取角色下的三级权限的id并保存在defKeys中
+        getLeafKeys(node,arr){
+          //三级节点
+          if (!node.children) {
+            return arr.push(node.id)
+          }
+          //不是三级节点
+          node.children.forEach(item=>{
+            this.getLeafKeys(item,arr)
+          })
+        },
+        setRightsDialogClosed(){
+          this.defKeys=[]
         }
-      }
+        }
     }
 </script>
 
