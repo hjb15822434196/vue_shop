@@ -25,7 +25,9 @@ import {
   Dialog,
   MessageBox,
   Tag,
-  Tree
+  Tree,
+  Select,
+  Option
 } from 'element-ui'
 
 
@@ -53,6 +55,8 @@ Vue.use(Pagination)
 Vue.use(Dialog)
 Vue.use(Tag)
 Vue.use(Tree)
+Vue.use(Select)
+Vue.use(Option)
 //挂载在vue的对象上，可以通过this访问
 Vue.prototype.$message = Message
 Vue.prototype.$confirm=MessageBox.confirm

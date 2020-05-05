@@ -108,10 +108,10 @@
           width="50%"
         @close="setRightsDialogClosed">
           <!-- 树形控件-->
-          <el-tree :data="rightsList" :props="treeProps" show-checkbox node-key="id" default-expand-all :default-checked-keys="defKeys"></el-tree>
+          <el-tree :data="rightsList" :props="treeProps" show-checkbox node-key="id" default-expand-all :default-checked-keys="defKeys" ref="treeRef"></el-tree>
           <span slot="footer" class="dialog-footer">
     <el-button @click="rightDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="rightDialogVisible = false">确 定</el-button>
+    <el-button type="primary" @click="allotRights" >确 定</el-button>
   </span>
         </el-dialog>
       </el-card>
@@ -133,6 +133,8 @@
             },
             //默认选中节点Id值数组
             defKeys:[],
+            //当前即将分配权限的id
+            roleId:'',
             //添加角色(提交表的数据)
             addForm :{
               roleId:'',
@@ -272,6 +274,7 @@
         },
         //分配权限对话框
         async showSetRightDialog(role){
+          this.roleId=role.id
         const {data:res}= await this.$http.get('rights/tree')
           if (res.meta.status!==200){
             return this.$message.error('删除权限数据失败')
@@ -291,8 +294,28 @@
             this.getLeafKeys(item,arr)
           })
         },
+        //清空节点id
         setRightsDialogClosed(){
           this.defKeys=[]
+        },
+        //点击分配权限
+       async allotRights(){
+          //拿选中的id
+          const keys=[
+            ...this.$refs.treeRef.getCheckedKeys(),
+            ...this.$refs.treeRef.getHalfCheckedKeys()
+          ]
+          const idStr =keys.join(',');
+        const{data:res} = await this.$http.post(
+             `roles/${this.roleId}/rights`,
+             {rids:idStr}
+           )
+         if (res.meta.status!==200) {
+           return this.$message.error('分配权限失败')
+         }
+         this.$message.success('分配权限成功');
+         this.getRolesList();
+         this.rightDialogVisible=false
         }
         }
     }
