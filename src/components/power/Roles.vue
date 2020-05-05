@@ -14,7 +14,32 @@
         </el-row>
         <!-- 角色列表区域-->
         <el-table :data="roleList" border stripe>
-          <el-table-column type="expand"></el-table-column>
+          <!--展开列-->
+          <el-table-column type="expand">
+            <template v-slot="scope">
+              <el-row class="vcenter" :class="['bdbottom',index1===0? 'bdtop':'']"  v-for="(item1,index1) in scope.row.children" :key="item1.id">
+                <!--渲染一级菜单-->
+                <el-col :span="5">
+                  <el-tag>{{item1.authName}}</el-tag>
+                  <i class="el-icon-caret-right"></i>
+                </el-col>
+                <!--渲染二级和三级菜单-->
+                <el-col :span="19">
+                  <el-row  class="vcenter" :class="[index2===0? '':'bdtop']" v-for="(item2,index2) in item1.children" :key="item2.id">
+                    <!--二级-->
+                    <el-col :span="6">
+                      <el-tag type="success">{{item2.authName}}</el-tag>
+                      <i class="el-icon-caret-right"></i>
+                    </el-col>
+                    <!--三级-->
+                    <el-col :span="18">
+                      <el-tag type="warning" v-for="(item3,index3) in item2.children" :key="item3.id">{{item3.authName}}</el-tag>
+                    </el-col>
+                  </el-row>
+                </el-col>
+              </el-row>
+            </template>
+          </el-table-column>
           <el-table-column type="index"></el-table-column>
           <el-table-column label="角色名称" prop="roleName"></el-table-column>
           <el-table-column label="角色描述" prop="roleDesc"></el-table-column>
@@ -205,5 +230,17 @@
 </script>
 
 <style lang="less" scoped>
-
+  .el-tag{
+    margin: 7px;
+  }
+  .bdtop{
+  border-top: 1px solid #eee;
+}
+  .bdbottom{
+   border-bottom: 1px solid #eee;
+ }
+  .vcenter {
+    display: flex;
+    align-items: center;
+  }
 </style>
