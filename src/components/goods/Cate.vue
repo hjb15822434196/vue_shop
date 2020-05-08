@@ -11,7 +11,32 @@
         <el-row>
           <el-col > <el-button type="primary" >添加分类</el-button></el-col>
         </el-row>
-        <!--表格-->
+        <!--树形表格-->
+        <tree-table :data="cateList" :columns="columns"
+        :selection-type="false" :expand-type="false"
+        show-index border >
+          <!--是否有效-->
+          <template slot="isOk" slot-scope="scope">
+          <i class="el-icon-success"
+             v-if="scope.row.cat_deleted ===false"
+             style="color: lightgreen;"></i>
+          <i class="el-icon-error" v-else
+             style="color: red;"
+          ></i>
+          </template>
+          <!--分级-->
+          <template #order="scope">
+         <el-tag size="mini" v-if="scope.row.cat_level===0">一级</el-tag>
+         <el-tag  type="success" size="mini" v-else-if="scope.row.cat_level===1">二级</el-tag>
+         <el-tag  type="warning" size="mini" v-else>三级</el-tag>
+          </template>
+          <!--操作-->
+          <template #opt="scope">
+         <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
+         <el-button  type="danger" icon="el-icon-delete" size="mini">删除</el-button>
+          </template>
+
+        </tree-table>
         <!--分页区域-->
       </el-card>
     </div>
@@ -29,7 +54,35 @@
             },
             //拿到商品分类数据
             cateList:[],
-            total:0
+            total:0,
+            //为table指定列的定义
+            columns:[
+              {
+                label:'分类名称',
+                prop:'cat_name'
+              },
+              {//模板列
+                label:'是否有效',
+                //把当前列定义为模板列
+                type:'template',
+                //模板名称
+                template:'isOk'
+              },
+              {//模板列
+                label:'排序',
+                //把当前列定义为模板列
+                type:'template',
+                //模板名称
+                template:'order'
+              },
+              {//模板列
+                label:'操作',
+                //把当前列定义为模板列
+                type:'template',
+                //模板名称
+                template:'opt'
+              }
+            ]
           }
         },
       created(){
