@@ -9,10 +9,10 @@
       <!--卡片视图区域-->
       <el-card>
         <el-row>
-          <el-col > <el-button type="primary" >添加分类</el-button></el-col>
+          <el-col > <el-button type="primary" @click="showDialog" >添加分类</el-button></el-col>
         </el-row>
         <!--树形表格-->
-        <tree-table :data="cateList" :columns="columns"
+        <tree-table  class="tableTree" :data="cateList" :columns="columns"
         :selection-type="false" :expand-type="false"
         show-index border >
           <!--是否有效-->
@@ -38,7 +38,32 @@
 
         </tree-table>
         <!--分页区域-->
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="queryInfo.pagenum"
+          :page-sizes="[3, 5, 7,10]"
+          :page-size="queryInfo.pagesize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
       </el-card>
+      <!--添加分类对话框-->
+      <el-dialog
+        title="添加分类"
+        :visible.sync="addDialogVisible" width="50%">
+        <!-- 添加表单数据-->
+        <el-form :model="addForm" :rules="addRules" ref="addFormRef" label-width="100px">
+          <el-form-item label="分类名称:" prop="cat_name" >
+            <el-input v-model="addForm.cat_name"></el-input>
+          </el-form-item>
+          <el-form-item label="父级分类:" ></el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="addDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+  </span>
+      </el-dialog>
     </div>
 </template>
 
@@ -52,9 +77,18 @@
               pagenum:1,
               pagesize:5
             },
+            //表单提交的数据
+            addForm:{
+              cat_name:'',
+              cat_id:0,
+              cat_level:0
+            },
             //拿到商品分类数据
             cateList:[],
+            //父级分类数据
+            FucateList:[],
             total:0,
+            addDialogVisible:false,//控制对话框显隐
             //为table指定列的定义
             columns:[
               {
@@ -82,7 +116,13 @@
                 //模板名称
                 template:'opt'
               }
-            ]
+            ],
+            addRules:{
+              cat_name:[
+                { required: true, message: '请输入分类名称', trigger: 'blur' },
+                { min: 3, max: 10, message: '长度在 3 到10 个字符', trigger: 'blur' }
+                ]
+            }
           }
         },
       created(){
@@ -95,11 +135,35 @@
           if (res.meta.status!==200) return this.$message.error('获取商品分类列表失败！')
           this.cateList=res.data.result
           this.total=res.data.total
+        },
+        //分页
+        handleSizeChange(newSize){
+         this.queryInfo.pagesize=newSize;
+          this.getCateList();
+        },
+        handleCurrentChange(newPage){
+         this.queryInfo.pagenum=newPage;
+          this.getCateList();
+        },
+        //展示添加分类对话框
+        showDialog(){
+          this.getFuCateList();
+         this.addDialogVisible=true;
+        },
+        //获取商品分类数据
+        async getFuCateList(){
+          const {data: res} = await this.$http.get('categories', {params:{type:2}})
+          if (res.meta.status!==200) return this.$message.error('获取父级分类列表失败！')
+          this.FucateList=res.data
+          console.log(this.FucateList);
         }
+
       }
     }
 </script>
 
-<style scoped>
-
+<style lang="less" scoped>
+.tableTree{
+  margin-top: 15px;
+}
 </style>
