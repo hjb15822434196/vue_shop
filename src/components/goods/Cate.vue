@@ -57,11 +57,25 @@
           <el-form-item label="分类名称:" prop="cat_name" >
             <el-input v-model="addForm.cat_name"></el-input>
           </el-form-item>
-          <el-form-item label="父级分类:" ></el-form-item>
+          <el-form-item label="父级分类:" >
+            <!--级联选择器-->
+            <!--options用来指定数据源-->
+            <!--用来指定配置对象-->
+            <el-cascader
+              v-model="selectKeys"
+              :options="FucateList"
+              :props="{ expandTrigger: 'hover',
+                        value:'cat_id',
+                        label:'cat_name',
+                        children:'children' }"
+              @change="handleChange"
+            clearable change-on-select>
+            </el-cascader>
+          </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
     <el-button @click="addDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+    <el-button type="primary" @click="add">确 定</el-button>
   </span>
       </el-dialog>
     </div>
@@ -80,7 +94,7 @@
             //表单提交的数据
             addForm:{
               cat_name:'',
-              cat_id:0,
+              cat_pid:0,
               cat_level:0
             },
             //拿到商品分类数据
@@ -122,7 +136,8 @@
                 { required: true, message: '请输入分类名称', trigger: 'blur' },
                 { min: 3, max: 10, message: '长度在 3 到10 个字符', trigger: 'blur' }
                 ]
-            }
+            },
+            selectKeys:[],//选中父级分类id数组
           }
         },
       created(){
@@ -155,8 +170,27 @@
           const {data: res} = await this.$http.get('categories', {params:{type:2}})
           if (res.meta.status!==200) return this.$message.error('获取父级分类列表失败！')
           this.FucateList=res.data
-          console.log(this.FucateList);
+        },
+        //选择项发生变化触发函数
+        handleChange(){
+          console.log(this.selectKeys)
+          if (this.selectKeys.length>0){
+            //父级分类id
+            this.addForm.cat_pid=this.selectKeys[this.selectKeys.length-1]
+            //为当前分类等级赋值
+            this.addForm.level=this.selectKeys.length;
+            return
+          }else{
+            //父级分类id
+            this.addForm.cat_pid=0
+            //为当前分类等级赋值
+            this.addForm.level=0
+          }
+        },
+        add(){
+          console.log(this.addForm);
         }
+
 
       }
     }
@@ -166,4 +200,7 @@
 .tableTree{
   margin-top: 15px;
 }
+  .el-cascader{
+    width:100%
+  }
 </style>
