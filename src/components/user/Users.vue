@@ -198,7 +198,12 @@
     },
     methods:{
       async  getUserList(){
-
+        const {data: res} = await this.$http.get('users',
+          {params:this.queryInfo
+          })
+        if (res.meta.status!==200) return this.$message.error('获取用户列表失败！')
+        this.userList=res.data.users
+        this.total=res.data.total
       },
       //监听pagesize改变事件并实时更新每页的显示的数据条数
       handleSizeChange(newsize){

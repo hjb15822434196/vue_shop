@@ -51,7 +51,7 @@
       <!--添加分类对话框-->
       <el-dialog
         title="添加分类"
-        :visible.sync="addDialogVisible" width="50%">
+        :visible.sync="addDialogVisible" width="50%" @close="closeDialog">
         <!-- 添加表单数据-->
         <el-form :model="addForm" :rules="addRules" ref="addFormRef" label-width="100px">
           <el-form-item label="分类名称:" prop="cat_name" >
@@ -75,7 +75,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
     <el-button @click="addDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="add">确 定</el-button>
+    <el-button type="primary" @click="addCate">确 定</el-button>
   </span>
       </el-dialog>
     </div>
@@ -173,7 +173,7 @@
         },
         //选择项发生变化触发函数
         handleChange(){
-          console.log(this.selectKeys)
+         /* console.log(this.selectKeys)*/
           if (this.selectKeys.length>0){
             //父级分类id
             this.addForm.cat_pid=this.selectKeys[this.selectKeys.length-1]
@@ -187,10 +187,29 @@
             this.addForm.level=0
           }
         },
-        add(){
-          console.log(this.addForm);
+        //添加分类数据
+        addCate(){
+          this.$refs.addFormRef.validate(async valid=>{
+            if (!valid) return;
+            //成功发起添加请求
+            const {data :res} =  await this.$http.post('categories',this.addForm)
+            if (res.meta.status!==201){
+              return this.$message.error('添加分类失败')
+            }
+            this.$message.success('添加分类成功');
+            //隐藏对话框
+            this.addDialogVisible = false
+            //刷新列表
+            this.getCateList()
+          })
+        },
+        //监听对话框关闭事件，重置数据
+        closeDialog(){
+          this.$refs.addFormRef.resetFields()
+          this.selectKeys=[]
+          this.addForm.cat_level=0
+          this.addForm.cat_pid=0
         }
-
 
       }
     }
