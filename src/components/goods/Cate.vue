@@ -192,7 +192,6 @@
         },
         //选择项发生变化触发函数
         handleChange(){
-         /* console.log(this.selectKeys)*/
           if (this.selectKeys.length>0){
             //父级分类id
             this.addForm.cat_pid=this.selectKeys[this.selectKeys.length-1]
