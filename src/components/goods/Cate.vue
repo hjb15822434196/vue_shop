@@ -32,8 +32,8 @@
           </template>
           <!--操作-->
           <template #opt="scope">
-         <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
-         <el-button  type="danger" icon="el-icon-delete" size="mini">删除</el-button>
+         <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.cat_id)">编辑</el-button>
+         <el-button  type="danger" icon="el-icon-delete" size="mini"  @click="removeById(scope.row.cat_id)">删除</el-button>
           </template>
 
         </tree-table>
@@ -78,6 +78,22 @@
     <el-button type="primary" @click="addCate">确 定</el-button>
   </span>
       </el-dialog>
+      <!--编辑对话框-->
+      <el-dialog
+        title="编辑商品分类"
+        :visible.sync="editDialogVisible"
+        width="50%" @close="editDialogClosed">
+        <!-- 添加表单数据-->
+        <el-form :model="editForm" :rules="addRules" ref="editFormRef" label-width="70px">
+          <el-form-item label="商品分类">
+            <el-input v-model="editForm.cat_name"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="editDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="editUserInfo">确 定</el-button>
+  </span>
+      </el-dialog>
     </div>
 </template>
 
@@ -97,12 +113,15 @@
               cat_pid:0,
               cat_level:0
             },
+            //编辑回显查询分类信息
+            editForm:{},
             //拿到商品分类数据
             cateList:[],
             //父级分类数据
             FucateList:[],
             total:0,
             addDialogVisible:false,//控制对话框显隐
+            editDialogVisible:false,//控制编辑对话框
             //为table指定列的定义
             columns:[
               {
@@ -209,8 +228,64 @@
           this.selectKeys=[]
           this.addForm.cat_level=0
           this.addForm.cat_pid=0
-        }
+        },
+        //编辑回显
+        async showEditDialog(id){
+          //拿到对应的数据
+          const{data:res}=await this.$http.get('categories/'+id)
+          if (res.meta.status!==200){
+            return this.$message.error('查询角色失败')
+          }
+          //获取成功并赋值
+          this.editForm=res.data
+          //对话框出现
+          this.editDialogVisible=true
+        },
+        //修改角色信息并提交
+        editUserInfo(){
+          this.$refs.editFormRef.validate( async valid=>{
+            if (!valid) return;
+            //发起修改用户数据请求
+            const{data:res}=await  this.$http.put('categories/'+this.editForm.cat_id,
+              {
+                cat_name: this.editForm.cat_name,
+              })
+            if (res.meta.status!==200){
+              return this.$message.error('更新失败')
+            }
+            this.$message.success('修改成功');
+            //隐藏对话框
+            this.editDialogVisible=false;
+            //重新获取用户列表数据
+            this.getCateList()
+          })
+        },
+        //监听编辑对话框的关闭事件,重置数据
+        editDialogClosed(){
+          this.$refs.editFormRef.resetFields();
+        },
+        //删除角色
+        async  removeById(id){
+          const confirmResult=await this.$confirm('此操作将永久删除该角色, 是否继续?', '提示',
+            {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).catch(err =>err);
 
+          if(confirmResult!=='confirm'){
+            return this.$message.info('已取消删除')
+          }
+          //请求删除
+          const{data:res}=  await this.$http.delete('categories/'+id);
+          if (res.meta.status!==200){
+            return this.$message.error('删除失败')
+          }
+          this.$message.success('删除成功');
+          //返回新的数据
+          this.getCateList()
+
+        }
       }
     }
 </script>

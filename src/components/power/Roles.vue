@@ -221,7 +221,7 @@
             if (res.meta.status!==200){
               return this.$message.error('更新失败')
             }
-            this.$message.success('添加角色成功');
+            this.$message.success('修改角色成功');
             //隐藏对话框
             this.editDialogVisible=false;
             //重新获取用户列表数据
