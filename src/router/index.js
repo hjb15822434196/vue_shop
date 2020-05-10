@@ -9,6 +9,7 @@ import Welcome from '../components/Welcome'
 import Users from '../components/user/Users'
 import Rights from '../components/power/Rights'
 import Roles from '../components/power/Roles'
+import Cate from '../components/goods/Cate'
 
 Vue.use(BaiduMap, {
   /* 申请的百度密钥，可以在百度地图官网申请 */
@@ -29,7 +30,8 @@ const routes = [
       {path: '/welcome', component: Welcome},
       {path: '/users', component: Users},
       {path: '/rights', component: Rights},
-      {path: '/roles', component: Roles}
+      {path: '/roles', component: Roles},
+      {path:'/categories',component:Cate}
   ]
   }
 ]

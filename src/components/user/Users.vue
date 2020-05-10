@@ -82,7 +82,7 @@
         title="编辑用户数据"
         :visible.sync="editDialogVisible"
         width="50%" @close="editDialogClosed">
-        <!-- 表单验证-->
+        <!-- 添加表单数据-->
         <el-form :model="editForm" :rules="addRules" ref="editFormRef" label-width="70px">
           <el-form-item label="用户名"  >
             <el-input v-model="editForm.username" disabled></el-input>
@@ -199,8 +199,8 @@
     methods:{
       async  getUserList(){
         const {data: res} = await this.$http.get('users',
-       {params:this.queryInfo
-       })
+          {params:this.queryInfo
+          })
         if (res.meta.status!==200) return this.$message.error('获取用户列表失败！')
         this.userList=res.data.users
         this.total=res.data.total
