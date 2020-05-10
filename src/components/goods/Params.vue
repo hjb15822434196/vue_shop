@@ -29,10 +29,18 @@
                 @change="handleChange"
                 clearable change-on-select>
               </el-cascader>
-
-
           </el-col>
         </el-row>
+        <!--tab页签区-->
+        <el-tabs v-model="activeName" @tab-click="handleClick">
+          <el-tab-pane label="动态参数" name="first">
+            <el-button type="primary" size="mini" :disabled="isBtnDisabled">添加参数</el-button>
+          </el-tab-pane>
+
+          <el-tab-pane label="静态属性" name="second">
+            <el-button type="primary" size="mini" :disabled="isBtnDisabled">添加属性</el-button>
+          </el-tab-pane>
+        </el-tabs>
 
       </el-card>
     </div>
@@ -44,10 +52,20 @@
          return{
            cateList:[], //拿到商品分类数据
            selectKeys:[],//选中父级分类id数组
+           activeName:'second',//被激活的标签
          }
        },
       created(){
         this.getCateList()
+      },
+      computed:{
+         //按钮需禁用为true
+        isBtnDisabled(){
+          if (this.selectKeys.length!==3){
+            return true
+          }
+         return false
+        }
       },
       methods:{
         //获取商品分类数据
@@ -57,9 +75,9 @@
           this.cateList=res.data;
         },
         //选择框发生变化触发函数
-        handleChange(){
-        /*  console.log(this.selectKeys);*/
-        }
+        handleChange(){},
+        //tab页签发生变化触发函数
+        handleClick(){}
       }
     }
 </script>

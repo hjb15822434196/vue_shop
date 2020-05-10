@@ -29,7 +29,9 @@ import {
   Select,
   Option,
   Cascader,
-  Alert
+  Alert,
+  Tabs,
+  TabPane,
 } from 'element-ui'
 
 
@@ -61,6 +63,8 @@ Vue.use(Select)
 Vue.use(Option)
 Vue.use(Cascader)
 Vue.use(Alert)
+Vue.use(Tabs)
+Vue.use(TabPane)
 //挂载在vue的对象上，可以通过this访问
 Vue.prototype.$message = Message
 Vue.prototype.$confirm=MessageBox.confirm
