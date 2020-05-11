@@ -33,11 +33,11 @@
         </el-row>
         <!--tab页签区-->
         <el-tabs v-model="activeName" @tab-click="handleClick">
-          <el-tab-pane label="动态参数" name="first">
+          <el-tab-pane label="动态参数" name="many">
             <el-button type="primary" size="mini" :disabled="isBtnDisabled">添加参数</el-button>
           </el-tab-pane>
 
-          <el-tab-pane label="静态属性" name="second">
+          <el-tab-pane label="静态属性" name="only">
             <el-button type="primary" size="mini" :disabled="isBtnDisabled">添加属性</el-button>
           </el-tab-pane>
         </el-tabs>
@@ -52,7 +52,9 @@
          return{
            cateList:[], //拿到商品分类数据
            selectKeys:[],//选中父级分类id数组
-           activeName:'second',//被激活的标签
+           activeName:'many',//被激活的标签
+           manyTableData:[],//动态参数数据
+           onlyTableData:[],//静态参数数据
          }
        },
       created(){
@@ -75,10 +77,42 @@
           this.cateList=res.data;
         },
         //选择框发生变化触发函数
-        handleChange(){},
+       handleChange(){
+          //保证选择级联和tag标签都能获取到数据
+        this.getParamsData()
+       },
         //tab页签发生变化触发函数
-        handleClick(){}
+        handleClick(){
+          //保证选择级联和tag标签都能获取到数据
+          this.getParamsData()
+        },
+        //当前选中分类的三级分类id
+        cateId(){
+          if (this.selectKeys.length===3){
+            return this.selectKeys[2]
+          }
+          return null;
+        },
+        //获取参数列表数据
+        async getParamsData(){
+          //不是三级分类
+          if (this.selectKeys.length!==3){
+            this.selectKeys=[]
+            return
+          }
+          //是三级分类，根据所选id和当前所处面板，获取对应的参数
+          const {data: res} = await this.$http.get(`categories/${this.cateId()}/attributes`,
+            {params:{sel:this.activeName}})
+          if (res.meta.status!==200) return this.$message.error('获取参数列表失败！')
+          console.log(res.data);
+          if (this.activeName==='many'){
+            this.manyTableData=res.data
+          }else{
+            this.onlyTableData=res.data
+          }
+        }
       }
+
     }
 </script>
 
