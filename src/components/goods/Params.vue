@@ -38,7 +38,25 @@
             <!--动态参数列表-->
             <el-table :data="manyTableData" border stripe>
               <!--展开行-->
-              <el-table-column type="expand"></el-table-column>
+              <el-table-column type="expand">
+                <template v-slot="scope">
+                  <el-tag v-for="(item,index) in scope.row.attr_vals" :key="index" closable>
+                    {{item}}
+                  </el-tag>
+                  <!--输入的文本-->
+                  <el-input
+                    class="input-new-tag"
+                    v-if="inputVisible"
+                    v-model="inputValue"
+                    ref="saveTagInput"
+                    size="small"
+                    @keyup.enter.native="handleInputConfirm"
+                    @blur="handleInputConfirm"
+                  >
+                  </el-input>
+                  <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+                </template>
+              </el-table-column>
               <el-table-column type="index"></el-table-column>
               <el-table-column label="参数名称" prop="attr_name"></el-table-column>
               <el-table-column label="操作">
@@ -58,7 +76,25 @@
             <!--静态参数列表-->
             <el-table :data="onlyTableData" border stripe>
               <!--展开行-->
-              <el-table-column type="expand"></el-table-column>
+              <el-table-column type="expand">
+                <template v-slot="scope">
+                  <el-tag v-for="(item,index) in scope.row.attr_vals" :key="index" closable>
+                    {{item}}
+                  </el-tag>
+                  <!--输入的文本-->
+                  <el-input
+                    class="input-new-tag"
+                    v-if="inputVisible"
+                    v-model="inputValue"
+                    ref="saveTagInput"
+                    size="small"
+                    @keyup.enter.native="handleInputConfirm"
+                    @blur="handleInputConfirm"
+                  >
+                  </el-input>
+                  <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+                </template>
+              </el-table-column>
               <el-table-column type="index"></el-table-column>
               <el-table-column label="参数列表" prop="attr_name"></el-table-column>
               <el-table-column label="操作">
@@ -122,6 +158,8 @@
            onlyTableData:[],//静态参数数据
            dialogVisible:false,//控制添加对话框显隐
            editDialogVisible:false,//控制编辑对话框显隐
+           inputVisible:false,//输入标签控制
+           inputValue:'',
            addForm:{
              attr_name:'',
              activeName:''
@@ -197,6 +235,10 @@
           const {data: res} = await this.$http.get(`categories/${this.cateId()}/attributes`,
             {params:{sel:this.activeName}})
           if (res.meta.status!==200) return this.$message.error('获取参数列表失败！')
+
+          res.data.forEach(item=>{
+            item.attr_vals= item.attr_vals? item.attr_vals.split(' '):[]
+          })
           console.log(res.data);
           if (this.activeName==='many'){
             this.manyTableData=res.data
@@ -283,6 +325,14 @@
           this.$message.success('删除成功');
           //返回新的数据
           this.getParamsData()
+        },
+        //文本框失去焦点，或者摁下了Enter都会触发
+        handleInputConfirm(){
+
+        },
+        //点击按钮，展示文本框
+        showInput(){
+          this.inputVisible=true
         }
       }
 
@@ -292,6 +342,12 @@
 <style lang="less" scoped>
   .cat_opt{
     margin: 15px 0;
+  }
+  .el-tag{
+    margin: 10px;
+  }
+  .input-new-tag{
+    width: 120px;
   }
 
 </style>
