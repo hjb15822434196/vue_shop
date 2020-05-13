@@ -46,15 +46,15 @@
                   <!--输入的文本-->
                   <el-input
                     class="input-new-tag"
-                    v-if="inputVisible"
-                    v-model="inputValue"
+                    v-if="scope.row.inputVisible"
+                    v-model="scope.row.inputValue"
                     ref="saveTagInput"
                     size="small"
-                    @keyup.enter.native="handleInputConfirm"
-                    @blur="handleInputConfirm"
+                    @keyup.enter.native="handleInputConfirm(scope.row)"
+                    @blur="handleInputConfirm(scope.row)"
                   >
                   </el-input>
-                  <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+                  <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ New Tag</el-button>
                 </template>
               </el-table-column>
               <el-table-column type="index"></el-table-column>
@@ -158,8 +158,6 @@
            onlyTableData:[],//静态参数数据
            dialogVisible:false,//控制添加对话框显隐
            editDialogVisible:false,//控制编辑对话框显隐
-           inputVisible:false,//输入标签控制
-           inputValue:'',
            addForm:{
              attr_name:'',
              activeName:''
@@ -238,8 +236,11 @@
 
           res.data.forEach(item=>{
             item.attr_vals= item.attr_vals? item.attr_vals.split(' '):[]
+            //控制文本框显隐
+            item.inputVisible=false;
+            //文本框中输入值
+            item.inputValue=''
           })
-          console.log(res.data);
           if (this.activeName==='many'){
             this.manyTableData=res.data
           }else{
@@ -327,12 +328,17 @@
           this.getParamsData()
         },
         //文本框失去焦点，或者摁下了Enter都会触发
-        handleInputConfirm(){
-
+        handleInputConfirm(row){
+          if (row.inputValue.trim().length===0){
+            row.inputValue=''
+            row.inputVisible=false
+            return
+          }
+        //输入有内容，需要做处理
         },
         //点击按钮，展示文本框
-        showInput(){
-          this.inputVisible=true
+        showInput(row){
+         row.inputVisible=true
         }
       }
 
