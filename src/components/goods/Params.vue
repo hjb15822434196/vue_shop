@@ -40,7 +40,7 @@
               <!--展开行-->
               <el-table-column type="expand">
                 <template v-slot="scope">
-                  <el-tag v-for="(item,index) in scope.row.attr_vals" :key="index" closable>
+                  <el-tag v-for="(item,index) in scope.row.attr_vals" :key="index" closable @close="handleClose(index,scope.row)">
                     {{item}}
                   </el-tag>
                   <!--输入的文本-->
@@ -78,21 +78,21 @@
               <!--展开行-->
               <el-table-column type="expand">
                 <template v-slot="scope">
-                  <el-tag v-for="(item,index) in scope.row.attr_vals" :key="index" closable>
+                  <el-tag v-for="(item,index) in scope.row.attr_vals" :key="index" closable @close="handleClose(index,scope.row)">
                     {{item}}
                   </el-tag>
                   <!--输入的文本-->
                   <el-input
                     class="input-new-tag"
-                    v-if="inputVisible"
-                    v-model="inputValue"
+                    v-if="scope.row.inputVisible"
+                    v-model="scope.row.inputValue"
                     ref="saveTagInput"
                     size="small"
-                    @keyup.enter.native="handleInputConfirm"
-                    @blur="handleInputConfirm"
+                    @keyup.enter.native="handleInputConfirm(scope.row)"
+                    @blur="handleInputConfirm(scope.row)"
                   >
                   </el-input>
-                  <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+                  <el-button v-else class="button-new-tag" size="small"@click="showInput(scope.row)">+ New Tag</el-button>
                 </template>
               </el-table-column>
               <el-table-column type="index"></el-table-column>
@@ -115,7 +115,7 @@
         :title="'添加'+titleText"
         :visible.sync="dialogVisible"
         width="50%"
-        @close="handleClose">
+        @close="addHandleClose">
         <!--提交表单-->
         <el-form :model="addForm" :rules="addRules" ref="addFormRef" label-width="100px">
           <el-form-item :label=titleText prop="attr_name">
@@ -127,7 +127,7 @@
     <el-button type="primary" @click="addParams">确 定</el-button>
   </span>
       </el-dialog>
-      <!--编辑-->
+      <!--编辑对话框-->
       <el-dialog
         :title="'编辑'+titleText"
         :visible.sync="editDialogVisible"
@@ -227,6 +227,8 @@
           //不是三级分类
           if (this.selectKeys.length!==3){
             this.selectKeys=[]
+            this.manyTableData=[]
+             this.onlyTableData=[]
             return
           }
           //是三级分类，根据所选id和当前所处面板，获取对应的参数
@@ -248,7 +250,7 @@
           }
         },
         //重置添加的表单
-        handleClose(){
+        addHandleClose(){
           this.$refs.addFormRef.resetFields();
         },
         addParams(){
@@ -327,20 +329,42 @@
           //返回新的数据
           this.getParamsData()
         },
+        //保存数据到数据库
+        async saveTag(row){
+          const {data :res} =  await this.$http.put(`categories/${this.cateId()}/attributes/${row.attr_id}`,{
+            attr_name:row.attr_name,
+            attr_sel:row.attr_sel,
+            attr_vals:row.attr_vals.join(' ')//拼接成字符
+          })
+          if (res.meta.status!==200){
+            return this.$message.error('修改失败')
+          }
+          this.$message.success('修改成功');
+        },
         //文本框失去焦点，或者摁下了Enter都会触发
-        handleInputConfirm(row){
+       async handleInputConfirm(row){
           if (row.inputValue.trim().length===0){
             row.inputValue=''
             row.inputVisible=false
             return
           }
         //输入有内容，需要做处理
+          row.attr_vals.push(row.inputValue.trim())
+          row.inputValue=''
+          row.inputVisible=false
+          //保存数据到数据库
+         this.saveTag(row)
         },
         //点击按钮，展示文本框
         showInput(row){
          row.inputVisible=true
+        },
+        //删除标签
+        handleClose(index,row){
+          row.attr_vals.splice(index,1)
+          this.saveTag(row)
         }
-      }
+       }
 
     }
 </script>
