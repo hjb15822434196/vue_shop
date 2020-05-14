@@ -22,7 +22,11 @@
           <el-table-column label="商品名称" prop="goods_name"></el-table-column>
           <el-table-column label="商品价格（元）" prop="goods_price"></el-table-column>
           <el-table-column label="商品重量" prop="goods_weight"></el-table-column>
-          <el-table-column label="创建时间" prop="add_time"></el-table-column>
+          <el-table-column label="创建时间" prop="add_time">
+            <template v-slot="scope">
+              {{scope.row.add_time | dataFormat}}
+            </template>
+          </el-table-column>
           <el-table-column label="操作" width="300px">
             <template v-slot="scope">
               <!--编辑-->
