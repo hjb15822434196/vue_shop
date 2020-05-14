@@ -24,6 +24,7 @@
           <el-table-column label="商品重量" prop="goods_weight"></el-table-column>
           <el-table-column label="创建时间" prop="add_time">
             <template v-slot="scope">
+              <!--|为过滤管道符-->
               {{scope.row.add_time | dataFormat}}
             </template>
           </el-table-column>
@@ -36,6 +37,17 @@
             </template>
           </el-table-column>
         </el-table>
+        <!--分页区域-->
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="queryInfo.pagenum"
+          :page-sizes="[1, 2, 3, 5]"
+          :page-size="queryInfo.pagesize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          background>
+        </el-pagination>
       </el-card>
     </div>
 </template>
@@ -68,7 +80,17 @@
          this.$message.success('获取商品列表成功！')
           this.goodList=res.data.goods
           this.total=res.data.total
-       }
+       },
+        //监听pagesize改变事件并实时更新每页的显示的数据条数
+        handleSizeChange(newsize){
+          this.queryInfo.pagesize=newsize
+          this.getGoodsList()
+        },
+        //监听pagenum改变事件
+        handleCurrentChange(newpage){
+          this.queryInfo.pagenum=newpage
+          this.getGoodsList()
+        },
       }
     }
 </script>
