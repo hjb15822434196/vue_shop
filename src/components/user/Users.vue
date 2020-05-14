@@ -12,7 +12,8 @@
       <el-row :gutter="20">
         <el-col :span="7"> <el-input v-model="queryInfo.query" clearable @clear="getUserList" placeholder="请输入内容" >
           <el-button  slot="append" icon="el-icon-search" @click="getUserList"></el-button>
-        </el-input></el-col>
+        </el-input>
+        </el-col>
         <el-col :span="4"> <el-button type="primary" @click="dialogVisible = true">添加用户</el-button></el-col>
       </el-row>
        <!-- 用户列表区域-->
