@@ -36,10 +36,10 @@
           </el-table-column>
           <el-table-column label="操作" width="300px">
             <template v-slot="scope">
-              <!--编辑-->
+              <!--区县-->
               <el-button type="primary" icon="el-icon-edit" size="mini" @click="addDialog"></el-button>
-              <!--删除-->
-              <el-button type="success" icon="el-icon-location" size="mini" ></el-button>
+              <!--物流-->
+              <el-button type="success" icon="el-icon-location" size="mini"@click="Dialog" ></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -55,13 +55,12 @@
           background>
         </el-pagination>
       </el-card>
-      <!--添加对话框-->
+      <!--修改地址对话框-->
       <el-dialog
         title="修改地址"
         :visible.sync="addDialogVisible"
         width="50%"
         @close="addHandleClose">
-        <!--修改表单-->
         <el-form :model="addForm" :rules="addRules" ref="addFormRef" label-width="100px">
           <el-form-item label="省市区/县" prop="address1">
            <el-cascader :options="cityData" v-model="addForm.address1"></el-cascader>
@@ -74,6 +73,20 @@
     <el-button @click="addDialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
   </span>
+      </el-dialog>
+      <!--展示物流进度对话框-->
+      <el-dialog
+        title="物流进度"
+        :visible.sync="DialogVisible"
+        width="50%">
+        <el-timeline >
+          <el-timeline-item
+            v-for="(activity, index) in progressInfo"
+            :key="index"
+            :timestamp="activity.time">
+            {{activity.context}}
+          </el-timeline-item>
+        </el-timeline>
       </el-dialog>
     </div>
 </template>
@@ -106,7 +119,10 @@
                { required: true, message: '请填写详细地址', trigger: 'blur' },
              ]
            },
-           cityData
+           cityData,
+           DialogVisible:false,
+           //物流数据
+           progressInfo:[]
          }
        },
       created(){
@@ -141,7 +157,16 @@
         addHandleClose(){
           this.$refs.addFormRef.resetFields();
         },
-      }
+        //展示物流对话框
+       async Dialog(){
+          const {data :res} =  await this.$http.get('/kuaidi/1106975712662')
+          if (res.meta.status!==200){
+            return this.$message.error('获取物流进度失败')
+          }
+          this.progressInfo=res.data;
+         this.DialogVisible=true
+       }
+       }
     }
 </script>
 
