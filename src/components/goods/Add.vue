@@ -110,7 +110,8 @@
              //图片的数组
              pics:[],
              //商品介绍
-             goods_introduce:''
+             goods_introduce:'',
+             attrs:[]
            },
            //动态参数数据
            manyTableData:[],
@@ -133,16 +134,13 @@
                { min: 2, max: 10, message: '长度在 2 到10 个字符', trigger: 'blur' }
                ],
              goods_price:[
-               { required: true, message: '请输入商品价格', trigger: 'blur' },
-               { min: 1, max: 10, message: '长度在 1 到10 个字符', trigger: 'blur' }
+               { required: true, message: '请输入商品价格', trigger: 'blur' }
              ],
              goods_weight:[
-               { required: true, message: '请输入商品重量', trigger: 'blur' },
-               { min: 1, max: 10, message: '长度在 1 到10 个字符', trigger: 'blur' }
+               { required: true, message: '请输入商品重量', trigger: 'blur' }
              ],
              goods_number:[
-               { required: true, message: '请输入商品数量', trigger: 'blur' },
-               { min: 1, max: 10, message: '长度在 1 到10 个字符', trigger: 'blur' }
+               { required: true, message: '请输入商品数量', trigger: 'blur' }
              ],
              goods_cat:[
                { required: true, message: '请输入商品分类', trigger: 'blur' }
@@ -243,8 +241,31 @@
             //成功发起添加请求
             const form=_.cloneDeep(this.addForm)
             form.goods_cat=  form.goods_cat.join(',')
-            console.log(form);
-
+            //动态参数
+            this.manyTableData.forEach(item=>{
+              const newInfo={
+                attr_id:item.attr_id,
+                attr_value:item.attr_vals.join(' ')
+              }
+              this.addForm.attrs.push(newInfo)
+            })
+            //静态参数
+            this.onlyTableData.forEach(item=>{
+              const newInfo={
+                attr_id:item.attr_id,
+                attr_value:item.attr_vals
+              }
+              this.addForm.attrs.push(newInfo)
+            })
+            form.attrs= this.addForm.attrs
+            //成功发起添加请求
+            const {data :res} =  await this.$http.post('goods',form)
+            if (res.meta.status!==201){
+              return this.$message.error('添加商品失败')
+            }
+            this.$message.success('添加商品成功');
+            //编程式导航
+            this.$router.push('/goods')
           })
         }
        }
