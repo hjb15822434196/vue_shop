@@ -79,7 +79,7 @@
           <el-tab-pane label="商品内容" name="4">
             <!--富文本编辑器组件-->
             <quill-editor v-model="addForm.goods_introduce"></quill-editor>
-            <el-button type="primary" class="btnAdd">添加商品</el-button>
+            <el-button type="primary" class="btnAdd" @click="add">添加商品</el-button>
           </el-tab-pane>
         </el-tabs>
         </el-form>
@@ -95,6 +95,7 @@
 </template>
 
 <script>
+  import _ from 'lodash'
     export default {
        data(){
          return{
@@ -232,6 +233,19 @@
           // 2.将图片信息对象，push到pics中
           this.addForm.pics.push(picInfo)
           console.log(this.addForm);
+        },
+        //添加商品
+        add(){
+          this.$refs.addFormRef.validate(async valid=>{
+            if (!valid) {
+              return this.$message.error('请添加必要得表单项')
+            };
+            //成功发起添加请求
+            const form=_.cloneDeep(this.addForm)
+            form.goods_cat=  form.goods_cat.join(',')
+            console.log(form);
+
+          })
         }
        }
     }
