@@ -37,7 +37,7 @@
           <el-table-column label="操作" width="300px">
             <template v-slot="scope">
               <!--编辑-->
-              <el-button type="primary" icon="el-icon-edit" size="mini" ></el-button>
+              <el-button type="primary" icon="el-icon-edit" size="mini" @click="addDialog"></el-button>
               <!--删除-->
               <el-button type="success" icon="el-icon-location" size="mini" ></el-button>
             </template>
@@ -55,10 +55,31 @@
           background>
         </el-pagination>
       </el-card>
+      <!--添加对话框-->
+      <el-dialog
+        title="修改地址"
+        :visible.sync="addDialogVisible"
+        width="50%"
+        @close="addHandleClose">
+        <!--修改表单-->
+        <el-form :model="addForm" :rules="addRules" ref="addFormRef" label-width="100px">
+          <el-form-item label="省市区/县" prop="address1">
+           <el-cascader :options="cityData" v-model="addForm.address1"></el-cascader>
+          </el-form-item>
+          <el-form-item label="详细地址" prop="address2">
+            <el-input v-model="addForm.address2"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="addDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+  </span>
+      </el-dialog>
     </div>
 </template>
 
 <script>
+  import cityData from './citydata.js'
     export default {
        data(){
          return{
@@ -71,6 +92,21 @@
            //获取的订单数据
            orderList:[],
            total:0,
+           addDialogVisible:false,
+           //修改地址
+           addForm:{
+             address1:[],
+             address2:''
+           },
+           addRules:{
+             address1:[
+               { required: true, message: '请选择省市区', trigger: 'blur' },
+             ],
+             address2:[
+               { required: true, message: '请填写详细地址', trigger: 'blur' },
+             ]
+           },
+           cityData
          }
        },
       created(){
@@ -96,6 +132,14 @@
         handleCurrentChange(newpage){
           this.queryInfo.pagenum=newpage
           this.getOrderList()
+        },
+        //添加地址
+        addDialog(){
+         this.addDialogVisible=true
+        },
+        //重置添加的表单
+        addHandleClose(){
+          this.$refs.addFormRef.resetFields();
         },
       }
     }
