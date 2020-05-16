@@ -35,7 +35,8 @@ import {
   Steps,
   Step,
   Checkbox,
-  CheckboxGroup
+  CheckboxGroup,
+  Upload
 
 } from 'element-ui'
 
@@ -74,6 +75,7 @@ Vue.use(Steps)
 Vue.use(Step)
 Vue.use(Checkbox)
 Vue.use(CheckboxGroup)
+Vue.use(Upload)
 //挂载在vue的对象上，可以通过this访问
 Vue.prototype.$message = Message
 Vue.prototype.$confirm=MessageBox.confirm
