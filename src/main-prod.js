@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import './plugins/element.js'
+
 //导入全局样式表
 import './assets/css/global.css'
 import axios from 'axios'
@@ -9,13 +9,10 @@ import axios from 'axios'
 import TreeTable from 'vue-table-with-tree-grid'
 //导入富文本编辑器
 import VueQuillEditor from 'vue-quill-editor'
-//样式
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
+
 //导入进度条
 import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
+
 //配置请求的根路径
 axios.defaults.baseURL='http://timemeetyou.com:8889/api/private/v1/'
 //通过axios请求拦截器添加token,保证拥有获取数据的权限

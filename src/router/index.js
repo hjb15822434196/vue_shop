@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '../components/Login.vue'
+/*import Login from '../components/Login.vue'*/
 import Map from '../components/Map'
 import vueJsonp from 'vue-jsonp'
 import BaiduMap from 'vue-baidu-map'
-import Home from '../components/Home'
+/*import Home from '../components/Home'
 import Welcome from '../components/Welcome'
 import Users from '../components/user/Users'
 import Rights from '../components/power/Rights'
@@ -14,8 +14,20 @@ import Params from '../components/goods/Params'
 import List from  '../components/goods/List'
 import Add from  '../components/goods/Add'
 import Order from  '../components/order/order'
-import Report from  '../components/report/report'
-
+import Report from  '../components/report/report'*/
+//路由懒加载：当路由被访问时才加载对应的路由文件，就是路由懒加载。
+const Login = () => import(/* webpackChunkName:"login_home_welcome" */ '../components/Login.vue')
+const Home = () => import(/* webpackChunkName:"login_home_welcome" */ '../components/Home')
+const Welcome = () => import(/* webpackChunkName:"login_home_welcome" */ '../components/Welcome')
+const Users = () => import(/* webpackChunkName:"user" */ '../components/user/Users')
+const Rights = () => import(/* webpackChunkName:"power" */ '../components/power/Rights')
+const Roles = () => import(/* webpackChunkName:"power" */ '../components/power/Roles')
+const Cate = () => import(/* webpackChunkName:"goods" */ '../components/goods/Cate')
+const Params = () => import(/* webpackChunkName:"goods" */ '../components/goods/Params')
+const List = () => import(/* webpackChunkName:"goods" */ '../components/goods/List')
+const Add = () => import(/* webpackChunkName:"goods" */ '../components/goods/Add')
+const Order = () => import(/* webpackChunkName:"order" */ '../components/order/order')
+const Report = () => import(/* webpackChunkName:"report" */ '../components/report/report')
 Vue.use(BaiduMap, {
   /* 申请的百度密钥，可以在百度地图官网申请 */
   ak: 'brdBS22T3Ic5zeAqnqHXGisSWhQNU91P'

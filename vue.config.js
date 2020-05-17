@@ -5,6 +5,17 @@ module.exports={
     //上线环境
     config.when(process.env.NODE_ENV==='production',config=>{
       config.entry('app').clear().add('./src/main-prod.js')
+
+      //使用externals设置排除项，减少资源过多
+      config.set('externals',{
+        vue:'Vue',
+        'vue-router':'VueRouter',
+        axios:'axios',
+        lodash:'_',
+        echarts:'echarts',
+        nprogress:'NProgress',
+        'vue-quill-editor':'VueQuillEditor'
+      })
     })
 
     //开发环境
