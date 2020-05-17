@@ -13,11 +13,22 @@ import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
+//导入进度条
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 //配置请求的根路径
 axios.defaults.baseURL='http://timemeetyou.com:8889/api/private/v1/'
 //通过axios请求拦截器添加token,保证拥有获取数据的权限
+//在request拦截器中，展示进度条  NProgress.start();
 axios.interceptors.request.use(config =>{
+  NProgress.start();
   config.headers.Authorization=window.sessionStorage.getItem('token')
+  //最后必须返回config
+  return config
+})
+//在response拦截器中，隐藏进度条
+axios.interceptors.response.use(config =>{
+  NProgress.done();
   //最后必须返回config
   return config
 })
